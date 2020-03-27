@@ -1,6 +1,7 @@
+import dictionary.CompactPrefixTree;
+import dictionary.Dictionary;
 import org.junit.Assert;
 import org.junit.Test;
-import dictionary.*;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -12,7 +13,8 @@ import java.nio.file.Paths;
 
 /** Test file for CompactPrefixTree class.
  *  Note that this class provides only minimal testing.
- *  You are responsible for thoroughly testing the project on your own. */
+ *  You are responsible for thoroughly testing the project on your own.
+ *  S20 */
 public class CompactPrefixTreeTest {
     static final int NUM_SUGGESTIONS = 4;
 
@@ -30,11 +32,11 @@ public class CompactPrefixTreeTest {
         tree.add("dog");
         tree.add("demons");
 
-        String output = "test" + File.separator + "simpleTree1";
+        String output = "src/test/java" + File.separator + "simpleTree1";
         tree.printTree(output);
 
         Path actual = Paths.get(output);  // your output
-        Path expected = Paths.get("test" + File.separator + "expectedSimpleTree1"); // instructor's
+        Path expected = Paths.get("src/test/java" + File.separator + "expectedSimpleTree1"); // instructor's
 
         int count = 0;
         try {
@@ -61,11 +63,11 @@ public class CompactPrefixTreeTest {
         tree.add("wrath");
         tree.add("wristle");
 
-        String output = "test" + File.separator + "simpleTree2";
+        String output = "src/test/java" + File.separator + "simpleTree2";
         tree.printTree(output);
 
         Path actual = Paths.get(output);  // your output
-        Path expected = Paths.get("test" + File.separator + "expectedSimpleTree2"); // instructor's
+        Path expected = Paths.get("src/test/java" + File.separator + "expectedSimpleTree2"); // instructor's
 
         int count = 0;
         try {
@@ -80,13 +82,13 @@ public class CompactPrefixTreeTest {
     @Test
     public void testComplexTree() {
         // Create a tree from words in the file "words_ospd.txt"
-        CompactPrefixTree tree = new CompactPrefixTree("words_ospd.txt");
+        CompactPrefixTree tree = new CompactPrefixTree("input/words_ospd.txt");
 
-        String output = "test" + File.separator + "wordsTree";
+        String output = "src/test/java" + File.separator + "wordsTree";
         tree.printTree(output);
 
         Path actual = Paths.get(output);  // your output
-        Path expected = Paths.get("test" + File.separator + "expectedWordsTree"); // instructor's
+        Path expected = Paths.get("src/test/java" + File.separator + "expectedWordsTree"); // instructor's
 
         int count = 0;
         try {
@@ -126,7 +128,7 @@ public class CompactPrefixTreeTest {
 
     @Test
     public void testCheckLargeDictionary() {
-        String filename = "words_ospd.txt";
+        String filename = "input/words_ospd.txt";
         Dictionary d = new CompactPrefixTree(filename); // added words from file to the dictionary
         try(BufferedReader br = new BufferedReader(new FileReader(filename))) {
             String line;
@@ -157,7 +159,7 @@ public class CompactPrefixTreeTest {
      */
     public void testSuggestions() {
         System.out.println("In test Suggestions ---");
-        String filename = "words_ospd.txt";
+        String filename = "input/words_ospd.txt";
         Dictionary d = new CompactPrefixTree(filename); //adds words from file to the dictionary
 
         String goodWords[] = { "cat", "baseball", "original"};
