@@ -28,6 +28,7 @@ public class CompactPrefixTree implements Dictionary {
      */
     public void add(String word) {
         root = add(word.toLowerCase(), root); // Calling private add method
+
     }
 
     /**
@@ -59,6 +60,7 @@ public class CompactPrefixTree implements Dictionary {
     public String toString() {
         String s = "";
         // FILL IN CODE
+
 
         return s;
     }
@@ -110,10 +112,45 @@ public class CompactPrefixTree implements Dictionary {
      * @return a reference to the root of the tree that contains s
      */
     private Node add(String s, Node node) {
-        // FILL IN CODE
+        Node newNode = new Node();
+
+        int searchIndex = Character.toLowerCase(s.charAt(0)) - 97;
+        if (node == null){
+            node = new Node();
+            node.prefix = "";
+            newNode.prefix = s;
+            node.children[searchIndex] = newNode;
+            newNode.isWord = true;
+        }else{
+            Node searchNode = node.children[searchIndex];
+
+            if (searchNode == null){
+                newNode.prefix = s;
+                node.children[searchIndex] = newNode;
+            }else {
+                if (searchNode.prefix.equals(s)){
+                    searchNode.isWord = true;
+                }else if (comparePrefix(searchNode.prefix, s) > 0){
+                    int preIndex = comparePrefix(searchNode.prefix, s); //index of first letter not contained in the prefix
+                    String ogPre = searchNode.prefix;
+                    String suffix = s.substring(preIndex); //suffix is suffix of word being entered
+                    if (preIndex == ogPre.length()){ //just adds new suffix to common prefix
+                        add(suffix, searchNode);
+                    }else { //if original prefix needs to be split up
+                        String suffixWord = ogPre.substring(preIndex); //suffix word is suffix of word already stored in node
+                        newNode.prefix = ogPre.substring(0, preIndex); //makes the common prefix the prefix of new node
+                        searchNode.prefix = suffixWord; // sets the suffix of the original node to be the prefix of the original node
+                        searchNode.isWord = true;
+                        newNode.children[Character.toLowerCase(searchNode.prefix.charAt(0)) - 97] = searchNode; // sets the original node as the child of the new node with the common prefix
+                        add(suffix, newNode); //recursively calls add method with new suffix on the subtree created by the new node
+                        node.children[searchIndex] = newNode;
+                    }
+                }
+            }
+        }
 
 
-        return null; // don't forget to change it
+        return node; // don't forget to change it
     }
 
 
@@ -140,6 +177,31 @@ public class CompactPrefixTree implements Dictionary {
         // FILL IN CODE
 
         return false; // don't forget to change it
+    }
+
+    /**************HELPER METHODS ******************/
+
+    public int comparePrefix(String prefix, String s){ //returns index of last char in s and prefix where they are equal.
+
+        int i = 0;
+        while (i < prefix.length() && i < s.length() && Character.toLowerCase(prefix.charAt(i)) == Character.toLowerCase(s.charAt(i))){
+            i++;
+        }
+        return i;
+    }
+
+    public void printPreOrder(){
+        printPreOrder(root);
+    }
+
+    private void printPreOrder(Node node){
+        if (node == null){
+            return;
+        }
+        System.out.println(node.prefix);
+        for (int i = 0; i < 26; i++) {
+            printPreOrder(node.children[i]);
+        }
     }
 
     // You might want to create a private recursive helper method for toString
