@@ -63,7 +63,14 @@ public class CompactPrefixTreeTest {
         tree.add("wrath");
         tree.add("wristle");
 
-        tree.printPreOrder();
+        String[] dictWords = {"liberty", "life", "lavender", "list", "youtube", "Your", "your", "you", "wrist", "Wrath", "wrisTle"};
+        for (int i = 0; i < dictWords.length; i++){
+            if (tree.check(dictWords[i]) == true){
+                System.out.println(dictWords[i]);
+            }else {
+                System.out.println(dictWords[i] + "is not found.");
+            }
+        }
 
         /*String output = "src/test/java" + File.separator + "simpleTree2";
         tree.printTree(output);

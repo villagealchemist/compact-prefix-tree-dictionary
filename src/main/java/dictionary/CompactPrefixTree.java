@@ -37,6 +37,7 @@ public class CompactPrefixTree implements Dictionary {
      * @return true if the word is in the dictionary, false otherwise
      */
     public boolean check(String word) {
+
         return check(word.toLowerCase(), root); // Calling private check method
     }
 
@@ -114,7 +115,7 @@ public class CompactPrefixTree implements Dictionary {
     private Node add(String s, Node node) {
         Node newNode = new Node();
 
-        int searchIndex = Character.toLowerCase(s.charAt(0)) - 97;
+        int searchIndex = Character.toLowerCase(s.charAt(0)) - 97; //97 is the ASCII value for lowercase 'a'
         if (node == null){
             node = new Node();
             node.prefix = "";
@@ -161,9 +162,35 @@ public class CompactPrefixTree implements Dictionary {
      * @return true if the prefix is in the dictionary, false otherwise
      */
     private boolean check(String s, Node node) {
-        // FILL IN CODE
 
-        return false; // don't forget to change it
+        if (node == null /*|| comparePrefix(node.prefix, s) <= 0*/){ //handles the always false base cases
+            return false;
+        }else if (comparePrefix(node.prefix, s) <= 0 && !node.prefix.equals("")){
+            return false;
+        }
+
+        else if (node.prefix.equals(s)) { //handles the base cases if prefix = word that's being found
+
+            if (node.isWord == false) {
+                return false;
+            }
+            return true;
+
+        }else{
+            int searchIndex = Character.toLowerCase(s.charAt(0)) - 97;
+            Node searchNode = node.children[searchIndex];
+            int sufIndex = comparePrefix(searchNode.prefix, s);
+
+            String suffix = s.substring(sufIndex);
+            if (searchNode == null){
+                return false;
+            }else {
+                check(suffix, searchNode);
+            }
+
+        }
+
+        return true; // don't forget to change it
     }
 
     /**
@@ -190,6 +217,7 @@ public class CompactPrefixTree implements Dictionary {
         return i;
     }
 
+    /*code testing methods*/
     public void printPreOrder(){
         printPreOrder(root);
     }
