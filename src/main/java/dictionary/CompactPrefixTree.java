@@ -162,35 +162,27 @@ public class CompactPrefixTree implements Dictionary {
      * @return true if the prefix is in the dictionary, false otherwise
      */
     private boolean check(String s, Node node) {
+        int searchIndex = Character.toLowerCase(s.charAt(0)) - 97;
+        Node searchNode = node.children[searchIndex];
 
-        if (node == null /*|| comparePrefix(node.prefix, s) <= 0*/){ //handles the always false base cases
+
+        if (node == null || searchNode == null){
             return false;
-        }else if (comparePrefix(node.prefix, s) <= 0 && !node.prefix.equals("")){
+        }else if (!s.toLowerCase().contains(searchNode.prefix)){
             return false;
-        }
-
-        else if (node.prefix.equals(s)) { //handles the base cases if prefix = word that's being found
-
-            if (node.isWord == false) {
+        }else if (searchNode.prefix.equals(s)){
+            if (searchNode.isWord){
+                return true;
+            }else{
                 return false;
             }
-            return true;
-
         }else{
-            int searchIndex = Character.toLowerCase(s.charAt(0)) - 97;
-            Node searchNode = node.children[searchIndex];
             int sufIndex = comparePrefix(searchNode.prefix, s);
-
             String suffix = s.substring(sufIndex);
-            if (searchNode == null){
-                return false;
-            }else {
-                check(suffix, searchNode);
-            }
-
+            check(suffix, searchNode);
         }
 
-        return true; // don't forget to change it
+        return true;
     }
 
     /**

@@ -63,14 +63,15 @@ public class CompactPrefixTreeTest {
         tree.add("wrath");
         tree.add("wristle");
 
-        String[] dictWords = {"liberty", "life", "lavender", "list", "youtube", "Your", "your", "you", "wrist", "Wrath", "wrisTle"};
-        for (int i = 0; i < dictWords.length; i++){
-            if (tree.check(dictWords[i]) == true){
-                System.out.println(dictWords[i]);
-            }else {
-                System.out.println(dictWords[i] + "is not found.");
+        String[] dictWords = {"liberty", "life", "lavender", "list", "youtube", "Your", "your", "you", "wrist", "Wrath", "wrisTle", "Luna", "LOL"};
+        for (int i = 0; i < dictWords.length; i++) {
+            if (tree.check(dictWords[i]) == true) {
+                System.out.println(dictWords[i] + " is a word!");
+            } else if (tree.check(dictWords[i]) == false){
+                System.out.println(dictWords[i] + " was not found.");
             }
         }
+    }
 
         /*String output = "src/test/java" + File.separator + "simpleTree2";
         tree.printTree(output);
@@ -86,7 +87,7 @@ public class CompactPrefixTreeTest {
         }
         if (count <= 0)
             Assert.fail(" File check failed, files are different" );*/
-    }
+
 
     @Test
     public void testComplexTree() {
