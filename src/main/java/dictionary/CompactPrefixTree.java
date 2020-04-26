@@ -1,5 +1,7 @@
 package dictionary;
 
+import java.io.*;
+
 /** CompactPrefixTree class, implements Dictionary ADT and
  *  several additional methods. Can be used as a spell checker.
  *  Fill in code and feel free to add additional methods as needed.
@@ -17,8 +19,18 @@ public class CompactPrefixTree implements Dictionary {
      * @param filename the name of the file with words
      */
     public CompactPrefixTree(String filename) {
-        // FILL IN CODE:
-        // Read each word from the file, add it to the tree
+        try {
+            FileReader fr = new FileReader(filename);
+            BufferedReader br = new BufferedReader(fr);
+            while (br.readLine() != null){
+                String[] lineWords = br.readLine().split(" ");
+                for (int i = 0; i < lineWords.length; i++){
+                    add(lineWords[i]);
+                }
+            }
+        }catch(IOException e){
+            System.out.println("IO Exception");
+        }
 
 
     }
@@ -72,8 +84,15 @@ public class CompactPrefixTree implements Dictionary {
      * @param filename the name of the file where to output the tree
      */
     public void printTree(String filename) {
-        // FILL IN CODE
-        // Uses toString() method; outputs info to a file
+        try{
+            File file = new File("DictionaryWords.txt");
+            FileWriter fw = new FileWriter(file);
+            BufferedWriter bw = new BufferedWriter(fw);
+
+
+        }catch (IOException e){
+            System.out.println("IO exception.");
+        }
 
 
     }
@@ -193,9 +212,33 @@ public class CompactPrefixTree implements Dictionary {
      * @return true if the prefix is in the dictionary, false otherwise
      */
     private boolean checkPrefix(String prefix, Node node) {
-        // FILL IN CODE
+        int searchIndex = Character.toLowerCase(prefix.charAt(0)) - 97;
+        Node searchNode = node.children[searchIndex];
 
-        return false; // don't forget to change it
+        if (node == null || searchNode == null){
+            return false;
+        }
+
+        int comparison = comparePrefix(searchNode.prefix, prefix);
+
+        if (searchNode.prefix.equalsIgnoreCase(prefix)){
+            return true;
+        }else{
+            if(searchNode.prefix.length() < prefix.length()){
+                if (comparison == searchNode.prefix.length()) { //runs if the entire node prefix is part of given prefix
+                prefix = prefix.substring(comparison); //trims prefix to remove what's already been confirmed
+                return checkPrefix(prefix, searchNode);
+                 }
+                return false;
+            }else if (searchNode.prefix.length() >= prefix.length()){ //checks whether the prefix is part of the word
+                if (comparison == prefix.length()){
+                    return true;
+                }
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**************HELPER METHODS ******************/

@@ -62,15 +62,25 @@ public class CompactPrefixTreeTest {
         tree.add("wrist");
         tree.add("wrath");
         tree.add("wristle");
+        tree.add("yarn");
 
-        String[] dictWords = {"liberty", "life", "lavender", "list", "youtube", "Your", "your", "you", "wrist", "Wrath", "wrisTle", "Luna", "LOL"};
+        String[] prefixes = {"wee", "w", "ya", "l", "wrath", "you", "tax", "zoo", "s"};
+        for (int i = 0; i < prefixes.length; i++){
+            if (tree.checkPrefix(prefixes[i]) == true){
+                System.out.println(prefixes[i] + " is valid");
+            }else{
+                System.out.println(prefixes[i] + " is not valid");
+            }
+        }
+
+        /*String[] dictWords = {"liberty", "life", "lavender", "list", "youtube", "Your", "your", "you", "wrist", "Wrath", "wrisTle", "Luna", "LOL"};
         for (int i = 0; i < dictWords.length; i++) {
             if (tree.check(dictWords[i]) == true) {
                 System.out.println(dictWords[i] + " is a word!");
             } else if (tree.check(dictWords[i]) == false){
                 System.out.println(dictWords[i] + " was not found.");
             }
-        }
+        }*/
     }
 
         /*String output = "src/test/java" + File.separator + "simpleTree2";
