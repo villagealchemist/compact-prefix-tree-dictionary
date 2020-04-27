@@ -64,14 +64,16 @@ public class CompactPrefixTreeTest {
         tree.add("wristle");
         tree.add("yarn");
 
-        String[] prefixes = {"wee", "w", "ya", "l", "wrath", "you", "tax", "zoo", "s"};
+        System.out.println(tree.toString());
+
+       /* String[] prefixes = {"wee", "w", "ya", "l", "wrath", "you", "tax", "zoo", "s"};
         for (int i = 0; i < prefixes.length; i++){
             if (tree.checkPrefix(prefixes[i]) == true){
                 System.out.println(prefixes[i] + " is valid");
             }else{
                 System.out.println(prefixes[i] + " is not valid");
             }
-        }
+        }*/
 
         /*String[] dictWords = {"liberty", "life", "lavender", "list", "youtube", "Your", "your", "you", "wrist", "Wrath", "wrisTle", "Luna", "LOL"};
         for (int i = 0; i < dictWords.length; i++) {
