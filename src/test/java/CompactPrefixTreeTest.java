@@ -62,9 +62,9 @@ public class CompactPrefixTreeTest {
         tree.add("wrist");
         tree.add("wrath");
         tree.add("wristle");
-        tree.add("yarn");
 
-        System.out.println(tree.toString());
+
+        //System.out.println(tree.toString());
 
        /* String[] prefixes = {"wee", "w", "ya", "l", "wrath", "you", "tax", "zoo", "s"};
         for (int i = 0; i < prefixes.length; i++){
@@ -79,13 +79,13 @@ public class CompactPrefixTreeTest {
         for (int i = 0; i < dictWords.length; i++) {
             if (tree.check(dictWords[i]) == true) {
                 System.out.println(dictWords[i] + " is a word!");
-            } else if (tree.check(dictWords[i]) == false){
+            } else if (tree.check(dictWords[i]) == false) {
                 System.out.println(dictWords[i] + " was not found.");
             }
         }*/
-    }
 
-        /*String output = "src/test/java" + File.separator + "simpleTree2";
+
+        String output = "src/test/java" + File.separator + "simpleTree2";
         tree.printTree(output);
 
         Path actual = Paths.get(output);  // your output
@@ -97,8 +97,10 @@ public class CompactPrefixTreeTest {
         } catch (IOException e) {
             Assert.fail(" File check failed: " + e.getMessage());
         }
-        if (count <= 0)
-            Assert.fail(" File check failed, files are different" );*/
+        if (count <= 0) {
+            Assert.fail(" File check failed, files are different");
+        }
+    }
 
 
     @Test

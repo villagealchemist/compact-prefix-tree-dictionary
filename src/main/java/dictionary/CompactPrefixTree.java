@@ -1,6 +1,7 @@
 package dictionary;
 
 import java.io.*;
+import java.util.ArrayList;
 
 /**
  * CompactPrefixTree class, implements Dictionary ADT and
@@ -39,8 +40,6 @@ public class CompactPrefixTree implements Dictionary {
         } catch (IOException e) {
             System.out.println("IO Exception");
         }
-
-
     }
 
     /**
@@ -50,7 +49,6 @@ public class CompactPrefixTree implements Dictionary {
      */
     public void add(String word) {
         root = add(word.toLowerCase(), root); // Calling private add method
-
     }
 
     /**
@@ -60,7 +58,6 @@ public class CompactPrefixTree implements Dictionary {
      * @return true if the word is in the dictionary, false otherwise
      */
     public boolean check(String word) {
-
         return check(word.toLowerCase(), root); // Calling private check method
     }
 
@@ -96,16 +93,16 @@ public class CompactPrefixTree implements Dictionary {
      */
     public void printTree(String filename) {
         try {
-            File file = new File("DictionaryWords.txt");
+            File file = new File(filename);
             FileWriter fw = new FileWriter(file);
             BufferedWriter bw = new BufferedWriter(fw);
 
+            bw.write(toString());
+            bw.flush();
 
         } catch (IOException e) {
             System.out.println("IO exception.");
         }
-
-
     }
 
     /**
@@ -125,18 +122,18 @@ public class CompactPrefixTree implements Dictionary {
      */
 
     public String[] suggest(String word, int numSuggestions) {
-        if (check(word) == true) {
-            String[] trueWord = {word};
-            return trueWord;
-        } else {
-            String[] suggestions = new String[numSuggestions];
-            for (int i = 0; i < numSuggestions; i++) {
-
-            }
+        if (check(word)) {
+            return new String[]{word};
         }
 
+        ArrayList<String> suggestions = suggest(root, word, numSuggestions);
 
-        return null; // don't forget to change it
+        while (suggestions.size() < numSuggestions && word.length() > 0) {
+            numSuggestions -= suggestions.size();
+            word = word.substring(0, word.length() - 1);
+            suggestions.addAll(suggest(root, word, numSuggestions));
+        }
+        return suggestions.toArray(new String[]{}); // don't forget to change it
     }
 
     // ---------- Private helper methods ---------------
@@ -186,8 +183,6 @@ public class CompactPrefixTree implements Dictionary {
                 }
             }
         }
-
-
         return node; // don't forget to change it
     }
 
@@ -203,7 +198,6 @@ public class CompactPrefixTree implements Dictionary {
         int searchIndex = Character.toLowerCase(s.charAt(0)) - 97;
         Node searchNode = node.children[searchIndex];
 
-
         if (node == null || searchNode == null) {
             return false;
         } else if (!s.toLowerCase().contains(searchNode.prefix)) {
@@ -214,13 +208,10 @@ public class CompactPrefixTree implements Dictionary {
             } else {
                 return false;
             }
-        } else {
-            int sufIndex = comparePrefix(searchNode.prefix, s);
-            String suffix = s.substring(sufIndex);
-            check(suffix, searchNode);
         }
-
-        return true;
+        int sufIndex = comparePrefix(searchNode.prefix, s);
+        String suffix = s.substring(sufIndex);
+        return check(suffix, searchNode);
     }
 
     /**
@@ -231,6 +222,9 @@ public class CompactPrefixTree implements Dictionary {
      * @return true if the prefix is in the dictionary, false otherwise
      */
     private boolean checkPrefix(String prefix, Node node) {
+        if (prefix.equalsIgnoreCase("")) {
+            return true;
+        }
         int searchIndex = Character.toLowerCase(prefix.charAt(0)) - 97;
         Node searchNode = node.children[searchIndex];
 
@@ -256,21 +250,13 @@ public class CompactPrefixTree implements Dictionary {
                 return false;
             }
         }
-
         return true;
     }
 
-    /**************HELPER METHODS ******************/
+    /*Private Helper Methods Added By Me...*/
 
-    public String closestPrefix(Node node, String word) {
-        if(node == null){
 
-        }
-
-        return word;
-    }
-
-    public int comparePrefix(String prefix, String s) { //returns index of last char in s and prefix where they are equal.
+    private int comparePrefix(String prefix, String s) { //returns index of last char in s and prefix where they are equal.
 
         int i = 0;
         while (i < prefix.length() && i < s.length() && Character.toLowerCase(prefix.charAt(i)) == Character.toLowerCase(s.charAt(i))) {
@@ -279,25 +265,8 @@ public class CompactPrefixTree implements Dictionary {
         return i;
     }
 
-    /*code testing methods*/
-    public void printPreOrder() {
-        printPreOrder(root);
-    }
 
-    private void printPreOrder(Node node) {
-        if (node == null) {
-            return;
-        }
-        if(node.isWord){
-            System.out.println(node.prefix + "*");
-        }else {
-            System.out.println(node.prefix);
-        }
-        for (int i = 0; i < 26; i++) {
-            printPreOrder(node.children[i]);
-        }
-    }
-    private String toString(Node node, int numIndentations){
+    private String toString(Node node, int numIndentations){ //recursively adds all nodes to a human readable string
         String s = "";
         if(node == null){
             return s;
@@ -306,9 +275,9 @@ public class CompactPrefixTree implements Dictionary {
             s += " ";
         }
         if (node.isWord){
-            s +=node.prefix + "*" +  "\n";
+            s += node.prefix + "*\n";
         }else {
-            s += node.prefix +  "\n";
+            s += node.prefix + "\n";
         }
         numIndentations += 1;
         for(int i = 0; i < 26; i++){
@@ -317,12 +286,80 @@ public class CompactPrefixTree implements Dictionary {
         return s;
     }
 
-    // You might want to create a private recursive helper method for toString
-    // that takes the node and the number of indentations, and returns the tree  (printed with indentations) in a string.
-    // private String toString(Node node, int numIndentations)
+    /*returns an array list to be converted to String[] in the public method*/
+    private ArrayList<String> suggest(Node node, String word, int numSuggestions){
+        ArrayList<String> suggestions = new ArrayList<String>();
+        if (node == null){
+            return suggestions;
+        }
+
+        if (node.isWord){
+            suggestions.add(node.prefix);
+            numSuggestions--;
+
+        }
+        if (numSuggestions == 0){
+            return suggestions;
+        }
+
+        int searchIndex = Character.toLowerCase(word.charAt(0)) - 97;
+        Node searchNode = node.children[searchIndex];
+
+        if (searchNode == null){
+            return suggestions;
+        }
+
+        int comparison = comparePrefix(searchNode.prefix, word);
+        if (comparison == 0) {
+            return suggestions;
+        }
+
+        ArrayList<String> newSuggestions = new ArrayList<>();
+
+        if (word.equals(searchNode.prefix)){  //everything at this node and below should be suggested
+            newSuggestions = suggestAll(searchNode, numSuggestions);
+        } else if (comparison == searchNode.prefix.length()){
+            // if searchNode is a word, suggest it
+            // recurse with remainder
+            String remainder = word.substring(comparison);
+            newSuggestions = suggest(searchNode, remainder, numSuggestions);
+        } else if (comparison < searchNode.prefix.length()){ //everything at this node and below should be suggested
+            if (comparison == word.length()){
+                newSuggestions = suggestAll(searchNode, numSuggestions);
+            }
+        }
+
+        for (int i = 0; i < newSuggestions.size(); i++){ //adds suggestions to array list to  be returned
+            suggestions.add(node.prefix + newSuggestions.get(i));
+        }
+
+        return suggestions;
+    }
+    /*Helper method to get suggestions from child arrays*/
+    private ArrayList<String> suggestAll(Node node, int numSuggestions){
+        ArrayList<String> suggestions = new ArrayList<String>();
+
+        if (node == null) {
+            return  suggestions;
+        }
+
+        if (node.isWord) {
+            suggestions.add(node.prefix);
+            numSuggestions--;
+        }
+
+        for (int i = 0; i < node.children.length && numSuggestions > 0; i++){
+            ArrayList<String> childSuggestions = suggestAll(node.children[i], numSuggestions);
+            numSuggestions -= childSuggestions.size();
+            for (int j = 0; j < childSuggestions.size(); j++) {
+                suggestions.add(node.prefix + childSuggestions.get(j));
+            }
+        }
+
+        return suggestions;
+    }
 
 
-    // Add a private suggest method. Decide which parameters it should have
 
     // --------- Private class Node ------------
     // Represents a node in a compact prefix tree
